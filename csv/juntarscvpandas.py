@@ -16,10 +16,10 @@ precipitaciones.drop(index=precipitaciones.index[0], axis=0, inplace=True)
 countTemp = list(Counter(temperaturas['Nombre']).keys())
 
 # Verificar si las listas de nombre son identicas 
-if(Counter(temperaturas['Nombre']).keys()==Counter(precipitaciones['Nombre']).keys()):
-    print("yes")
-else:
-    print("no")    
+# if(Counter(temperaturas['Nombre']).keys()==Counter(precipitaciones['Nombre']).keys()):
+#     print("yes")
+# else:
+#     print("no")    
 
 # Crear dos listas distintas para ver que estaciones tienen 366 datos en ambas dataframe
 listTemp = list(Counter(temperaturas['Nombre']).values())
@@ -34,14 +34,13 @@ for i in range(len(mezcla[1])):
 
 for i in range(len(mezcla[1])):
     if(mezcla[1][i]==listPrec[i]):
-        print(f'{mezcla[1][i]}==>{listPrec[i]}')
         if(listPrec[i]==366):
             mezcla[2][i]="Iguales"
 
 
 for i in range(len(mezcla[1])):
     if(mezcla[2][i]=="Distintos"):
-        print(mezcla[0][i])
+        #print(mezcla[0][i])
         temperaturas.drop(temperaturas[temperaturas.Nombre == mezcla[0][i]].index, inplace=True)
         precipitaciones.drop(precipitaciones[precipitaciones.Nombre == mezcla[0][i]].index, inplace=True)
 
@@ -58,10 +57,28 @@ precipitaciones = precipitaciones.reset_index(drop=True)
 # temperaturas.insert(loc=11, column='Precipitaciones', value=t) ## tengo que eliminar los indices
 # Agregar de forma mas simple
 temperaturas['Precipitaciones'] = precipitaciones['Valor']
-print(temperaturas)
 
-### FALTA ###
-#TRANSFORMAR MINUTOS A DECIMALES, ELIMINAR DATOS QUE NO SE OCUPAN
+# Eliminar columnas innecesarias
+temperaturas.drop('_id',axis=1,inplace=True)
+temperaturas.drop('IdEstacion',axis=1,inplace=True)
+temperaturas.drop('Altura',axis=1,inplace=True)
+
+# Transformar formato de coordenadas a decimales
+for i in range(len(temperaturas['Nombre'])):
+    latitud = temperaturas['Latitud'][i].split()
+    gradoLat = int(latitud[0].split('&')[0])
+    minutosLat=int(latitud[1].replace("'",""))
+    segundosLat=int(latitud[2].replace("'",""))
+    latitud = gradoLat+(minutosLat*60+segundosLat)/100
+    temperaturas['Latitud'][i] = latitud
+
+    longitud = temperaturas['Longitud'][i].split()
+    gradoLon = int(longitud[0].split('&')[0])
+    minutosLon=int(longitud[1].replace("'",""))
+    segundosLon=int(longitud[2].replace("'",""))
+    longitud = gradoLon+(minutosLon*60+segundosLon)/100
+    temperaturas['Longitud'][i] = longitud
+    #print(f'[{latitud},{longitud}]')
 
 # Guardar data transformada en csv
-temperaturas.to_csv('csv/mezcla.csv')
+temperaturas.to_csv('csv/mezcla.csv', index=False)

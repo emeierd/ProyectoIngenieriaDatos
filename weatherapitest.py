@@ -16,7 +16,7 @@ payload = {
     "fields": ["temperature", "precipitationType", "precipitationIntensity"],
     "units": "metric",
     "timesteps": ["current"],
-    "location": "18.35138889,70.33583333",
+    "location": "68.87,93.52000000000001",
     "timezone": "Chile/Continental"
 }
 headers = {
