@@ -8,13 +8,11 @@ precipitaciones = pd.read_csv("csv/precipitaciones.csv",
     names = ['_id','IdEstacion','Nombre','Latitud','Longitud','Altura','AA+-o','Mes',
     'Dia','Valor'])
 
-
+# Eliminar primera fila que contiene headers
 temperaturas.drop(index=temperaturas.index[0], axis=0, inplace=True)
 precipitaciones.drop(index=precipitaciones.index[0], axis=0, inplace=True)
-#print(temperaturas[['_id','IdEstacion','Nombre','Latitud','Longitud',
-#    'AA+-o','Mes','Dia','TMinima','TMaxima']])
-#print(precipitaciones[['Valor']])
 
+# Nombres unicos
 countTemp = list(Counter(temperaturas['Nombre']).keys())
 
 # Verificar si las listas de nombre son identicas 
@@ -26,8 +24,8 @@ else:
 # Crear dos listas distintas para ver que estaciones tienen 366 datos en ambas dataframe
 listTemp = list(Counter(temperaturas['Nombre']).values())
 listPrec = list(Counter(precipitaciones['Nombre']).values())
-print(listTemp)
-print(listPrec)
+#print(listTemp)
+#print(listPrec)
 
 # Crear lista vacia para agregar nombres en ambas listas con 366 datos
 mezcla = [countTemp,listTemp,[]]
@@ -47,13 +45,23 @@ for i in range(len(mezcla[1])):
         temperaturas.drop(temperaturas[temperaturas.Nombre == mezcla[0][i]].index, inplace=True)
         precipitaciones.drop(precipitaciones[precipitaciones.Nombre == mezcla[0][i]].index, inplace=True)
 
-print(temperaturas)     
-#print(Counter(temperaturas['Nombre']).values())   
-#print(Counter(temperaturas['Nombre']).keys())   
 
-# # Ver la cantidad de filas unicas en la dataframe
-# #print(temperaturas.nunique())
+# Ver la cantidad de filas unicas en la dataframe
+#print(temperaturas.nunique())
 
-print(precipitaciones)  
-#print(Counter(precipitaciones['Nombre']).values())   
-print(Counter(precipitaciones['Nombre']).keys())     
+# Reiniciar los indices para que no haya problema al juntar las 2 dataframes
+temperaturas = temperaturas.reset_index(drop=True)
+precipitaciones = precipitaciones.reset_index(drop=True)
+
+# Agregar mediante insert
+# t = pd.Series(precipitaciones['Valor'])
+# temperaturas.insert(loc=11, column='Precipitaciones', value=t) ## tengo que eliminar los indices
+# Agregar de forma mas simple
+temperaturas['Precipitaciones'] = precipitaciones['Valor']
+print(temperaturas)
+
+### FALTA ###
+#TRANSFORMAR MINUTOS A DECIMALES, ELIMINAR DATOS QUE NO SE OCUPAN
+
+# Guardar data transformada en csv
+temperaturas.to_csv('csv/mezcla.csv')
