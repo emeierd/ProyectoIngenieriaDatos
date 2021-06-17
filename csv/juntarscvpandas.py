@@ -80,5 +80,13 @@ for i in range(len(temperaturas['Nombre'])):
     temperaturas['Longitud'][i] = longitud
     #print(f'[{latitud},{longitud}]')
 
+# Eliminar 4 nombres unicos de la lista, ya que la api solo acepta 500 consultas al dia
+nombres = list(Counter(temperaturas['Nombre']).keys())
+temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[7]].index, inplace=True)
+temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[8]].index, inplace=True)
+temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[10]].index, inplace=True)
+temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[21]].index, inplace=True)
+#print(temperaturas.nunique())
+
 # Guardar data transformada en csv
 temperaturas.to_csv('csv/mezcla.csv', index=False)

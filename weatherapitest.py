@@ -32,4 +32,7 @@ print(time)
 ##Guardar datos cada una hora
 ##Cada dia ver cual es el minimo y maximo y guardarlo en una bd diaria
 
-##Convertir grados(minutos) a decimales
+## Leer el csv y sacar la localizacion de cada nombre
+## usar este metodo
+## listTemp = list(Counter(temperaturas['Nombre']).values())
+## deberia hacer una columna de coordenadas, pero se supone que las latitudes y longitudes de cada estacion son distintas
