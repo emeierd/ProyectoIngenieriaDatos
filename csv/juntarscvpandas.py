@@ -80,6 +80,14 @@ for i in range(len(temperaturas['Nombre'])):
     temperaturas['Longitud'][i] = longitud
     #print(f'[{latitud},{longitud}]')
 
+# Agregar columna Coordenadas, juntando latitud y longitud
+coordenadas = []
+for index, row in temperaturas.iterrows():
+    coordenadas.append(f"{row['Latitud']},{row['Longitud']}")
+
+# Agregar coodenadas a temperatura
+temperaturas.insert(loc=3, column='Coordenadas', value=coordenadas)    
+
 # Eliminar 4 nombres unicos de la lista, ya que la api solo acepta 500 consultas al dia
 nombres = list(Counter(temperaturas['Nombre']).keys())
 temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[7]].index, inplace=True)
@@ -89,4 +97,4 @@ temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[21]].index, inplac
 #print(temperaturas.nunique())
 
 # Guardar data transformada en csv
-temperaturas.to_csv('csv/mezcla.csv', index=False)
+temperaturas.to_csv('csv/data.csv', index=False)

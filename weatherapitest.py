@@ -1,38 +1,60 @@
 import requests
 from datetime import datetime, timedelta
+import pandas as pd
+from collections import Counter
 
+# Cargar data
+data = pd.read_csv("csv/data.csv",
+    names = ['Nombre','Latitud','Longitud','Coordenadas','AA+-o','Mes',
+    'Dia','TMinima','TMaxima','Precipitaciones'])
+
+# Eliminar primera fila con headers
+data.drop(index=data.index[0], axis=0, inplace=True) 
+
+# Obtener hora actual
 time = datetime.now()
 time2=time-timedelta(hours=6)
 timeStart=time-timedelta(seconds=120)
+
+# Formato de hora requerida por la api
 format ='%Y-%m-%dT%H:%M:%SZ'
 time = time.strftime(format)
 timeStart=timeStart.strftime(format)
 
-url = "https://api.tomorrow.io/v4/timelines"
+def obtener_datos_api(coordenada):
+    URL = "https://api.tomorrow.io/v4/timelines"
 
-querystring = {"apikey":"ZzNvUwVGe96cTbbB9NbKSyg59zqm5bb8"}
+    QUERYSTRING = {"apikey":"ZzNvUwVGe96cTbbB9NbKSyg59zqm5bb8"}
 
-payload = {
-    "fields": ["temperature", "precipitationType", "precipitationIntensity"],
-    "units": "metric",
-    "timesteps": ["current"],
-    "location": "68.87,93.52000000000001",
-    "timezone": "Chile/Continental"
-}
-headers = {
-    "Accept": "application/json",
-    "Content-Type": "application/json"
-}
+    payload = {
+        "fields": ["temperature", "precipitationType", "precipitationIntensity"],
+        "units": "metric",
+        "timesteps": ["current"],
+        "location": coordenada,
+        "timezone": "Chile/Continental"
+    }
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
 
-response = requests.request("POST", url, json=payload, headers=headers, params=querystring)
+    response = requests.request("POST", URL, json=payload, headers=headers, params=QUERYSTRING)
 
-print(response.text)
-print(time)
+    print(response.text)
+
+
+# Obtener todas las coordenadas unicas
+coordenadas = list(Counter(data['Coordenadas']).keys())
+
+# Iterar sobre coordenadas y llamar a la funcion para obtener datos mediante API
+for coordenada in coordenadas:
+    obtener_datos_api(coordenada)    
 
 ##Guardar datos cada una hora
 ##Cada dia ver cual es el minimo y maximo y guardarlo en una bd diaria
 
-## Leer el csv y sacar la localizacion de cada nombre
-## usar este metodo
-## listTemp = list(Counter(temperaturas['Nombre']).values())
-## deberia hacer una columna de coordenadas, pero se supone que las latitudes y longitudes de cada estacion son distintas
+## Crear kafka producer
+## Mandar response a producer
+## Hacer consumer para bd
+## Hacer consumer para comparacion?
+## Conectar consumer comparacion a Flask API?
