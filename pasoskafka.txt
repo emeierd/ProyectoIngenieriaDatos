@@ -1,0 +1,33 @@
+1. Arrancar dos contenedores contenedor usando
+    docker run -it --rm ubuntu:latest  / para linux agregar sudo
+
+2. Correr actualizacion de apt e instalar nano, java y wget
+    apt update && apt install -y nano openjdk-8-jre wget 
+
+3. Descargar kafka     
+    wget https://downloads.apache.org/kafka/2.8.0/kafka_2.13-2.8.0.tgz
+
+4. Descomprimir kafka
+    tar -xzf kafka_2.13-2.8.0.tgz    
+
+5. Ver la ip de de la maquina
+    cat /etc/hosts
+
+6. Modificar zookeeper.properties en maquina 1
+    nano kafka_2.13-2.8.0/config/zookeeper.properties
+    dataDir=/zookeeper-logs     
+
+7. Crear fichero zookeeper-logs
+    mkdir zookeeper-logs
+
+8. Arrancar zookeeper
+    kafka_2.13-2.8.0/bin/zookeeper-server-start.sh kafka_2.13-2.8.0/config/zookeeper.properties
+
+9. Modificar server.properties en maquina 2
+    kafka_2.13-2.8.0/config/server.properties
+    broker.id=0  -> cambiar a cualquier numero entero diferente si es que se quieren agregar más máquinas al cluster
+    zookeeper.connect=ipmaquina1obtenidaconpaso5:2181
+    listener=PLAINTEXT://ipmaquina1obtenidaconpaso5:9092
+
+10. Arrancar kafka
+    kafka_2.13-2.8.0/bin/kafka-server-start.sh kafka_2.13-2.8.0/config/server.properties        
