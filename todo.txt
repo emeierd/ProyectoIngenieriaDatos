@@ -1,0 +1,1 @@
+ver como mandar valores de kafka en formato json
