@@ -24,10 +24,11 @@
     kafka_2.13-2.8.0/bin/zookeeper-server-start.sh kafka_2.13-2.8.0/config/zookeeper.properties
 
 9. Modificar server.properties en maquina 2
-    kafka_2.13-2.8.0/config/server.properties
+    nano kafka_2.13-2.8.0/config/server.properties
     broker.id=0  -> cambiar a cualquier numero entero diferente si es que se quieren agregar más máquinas al cluster
-    zookeeper.connect=ipmaquina1obtenidaconpaso5:2181
-    listener=PLAINTEXT://ipmaquina1obtenidaconpaso5:9092
+    zookeeper.connect=ipmaquina1:2181
+    listener=PLAINTEXT://ipmaquina2:9092
+    log.dirs=/kafka-logs
 
 10. Arrancar kafka
     kafka_2.13-2.8.0/bin/kafka-server-start.sh kafka_2.13-2.8.0/config/server.properties        
