@@ -1,0 +1,13 @@
+1. Crear contenedor SQL Server 2019 en docker
+    docker run --name sqlserver2019 -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=aselga123' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+    1.1 Correr contenedor SQL Server 2019
+        sudo docker start sqlserver2019
+
+2. Entrar a sqlcmd
+    sudo -i
+    source ~/.bashrc
+    sqlcmd -S localhost -U SA -P 'aselga123'
+
+3. Crear BD
+    CREATE DATABASE TestDB
+    GO            
