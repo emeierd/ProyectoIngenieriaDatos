@@ -54,7 +54,7 @@ precipitaciones = precipitaciones.reset_index(drop=True)
 
 # Agregar mediante insert
 # t = pd.Series(precipitaciones['Valor'])
-# temperaturas.insert(loc=11, column='Precipitaciones', value=t) ## tengo que eliminar los indices
+# temperaturas.insert(loc=11, column='Precipitaciones', value=t)
 # Agregar de forma mas simple
 temperaturas['Precipitaciones'] = precipitaciones['Valor']
 
@@ -95,6 +95,36 @@ temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[8]].index, inplace
 temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[10]].index, inplace=True)
 temperaturas.drop(temperaturas[temperaturas.Nombre == nombres[21]].index, inplace=True)
 #print(temperaturas.nunique())
+
+# Modificar nombres a nombre de comuna
+#print(nombres)
+temperaturas['Nombre'].replace('Chacalluta, Arica Ap.', 'Arica', inplace=True)
+temperaturas['Nombre'].replace('Diego Aracena Iquique Ap.', 'Iquique', inplace=True)
+temperaturas['Nombre'].replace('El Loa, Calama Ad.', 'Calama', inplace=True)
+temperaturas['Nombre'].replace('Cerro Moreno  Antofagasta  Ap.', 'Antofagasta', inplace=True)
+temperaturas['Nombre'].replace('Mataveri  Isla de Pascua Ap.', 'Isla de Pascua', inplace=True)
+temperaturas['Nombre'].replace('Desierto de Atacama, Caldera  Ap.', 'Caldera', inplace=True)
+temperaturas['Nombre'].replace('La Florida, La Serena Ad.', 'La Serena', inplace=True)
+temperaturas['Nombre'].replace('Rodelillo, Ad.', 'Rodelillo', inplace=True)
+temperaturas['Nombre'].replace('Quinta Normal, Santiago', 'Quinta Normal Santiago', inplace=True)
+temperaturas['Nombre'].replace('Pudahuel Santiago ', 'Pudahuel Santiago', inplace=True)
+temperaturas['Nombre'].replace('Santo Domingo, Ad.', 'Santo Domingo', inplace=True)
+temperaturas['Nombre'].replace('Juan Fern?ndez, Estaci?n Meteorol?gica.', 'Juan Fernández', inplace=True)
+temperaturas['Nombre'].replace('General Freire, Curic? Ad.', 'Curicó', inplace=True)
+temperaturas['Nombre'].replace('Bernardo O"higgins, Chill?n Ad.', 'Chillán', inplace=True)
+temperaturas['Nombre'].replace('Carriel Sur, Concepci?n.', 'Concepción', inplace=True)
+temperaturas['Nombre'].replace('Mar?a Dolores, Los Angeles Ad.', 'Los Angeles', inplace=True)
+temperaturas['Nombre'].replace('Maquehue, Temuco Ad.', 'Temuco', inplace=True)
+temperaturas['Nombre'].replace('Pichoy, Valdivia Ad.', 'Valdivia', inplace=True)
+temperaturas['Nombre'].replace('Ca?al Bajo,  Osorno Ad.', 'Osorno', inplace=True)
+temperaturas['Nombre'].replace('El Tepual  Puerto Montt Ap.', 'Puerto Montt', inplace=True)
+temperaturas['Nombre'].replace('Teniente Vidal, Coyhaique Ad.', 'Coyhaique', inplace=True)
+temperaturas['Nombre'].replace('Balmaceda Ad.', 'Balmaceda', inplace=True)
+temperaturas['Nombre'].replace('Carlos Iba?ez, Punta Arenas Ap.', 'Punta Arenas', inplace=True)
+temperaturas['Nombre'].replace('C.M.A. Eduardo Frei Montalva, Ant?rtica ', 'Antártica', inplace=True)
+#nombres = list(Counter(temperaturas['Nombre']).keys())
+#print(nombres)
+
 
 # Guardar data transformada en csv
 temperaturas.to_csv('csv/data.csv', index=False)

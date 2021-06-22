@@ -11,7 +11,8 @@ conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
 
 @app.route('/')
 def index():
-    return 'Welcome to the car API!'
+    return 'Bienvenido'
+
 
 @app.route('/users')
 def users():
@@ -46,46 +47,38 @@ def users():
 #     except:
 #         return 'Error connecting to the Database'
 
-# @app.route('/cars')    
-# def all_cars():
-#     query = "SELECT * FROM Cars"
-#     cursor = conn.cursor()
-#     cursor.execute(query)
-#     cars = cursor.fetchall()
-#     output = []
-    
-#     i=0
-#     while i<len(cars):
-#         car_data = {'brand':cars[i][1],'model':cars[i][2],'year':cars[i][3],'description':cars[i][4]}
-#         output.append(car_data)
-#         i += 1
-#     return {"cars":output}
 
 
-# @app.route('/cars/<id>')
-# def get_car(id):
-#     try:
-#         query = f"SELECT * FROM Cars WHERE id={id}"
-#         cursor = conn.cursor()
-#         cursor.execute(query)
-#         cars = cursor.fetchall()
-#         car_data = {'brand':cars[0][1],'model':cars[0][2],'year':cars[0][3],'description':cars[0][4]}
+@app.route('/tiempo/<id>')
+def obtener_tiempo(id):
+    try:
+        query = f"SELECT TOP 10 FROM {id} ORDEY BY id DESC"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        tiempos = cursor.fetchall()
+        output = []
+        
+        i = 0
+        while(i<len(tiempos)):
+            tiempos_data = {'coordenada':tiempos[i][1],'fecha':tiempos[i][2],'temperatura':tiempos[i][3],'precipitaciones':tiempos[i][4]}
+            output.append(tiempos_data)
+            i += 1
 
-#         return {"car": car_data}
-#     except:
-#         return f'No car has id: {id}'   
+        return {"tiempos": output}
+    except:
+        return f'No hay datos sobre {id}'   
 
 
-# @app.route('/cars', methods=['POST'])   
-# def add_car():
-#     query = f"INSERT INTO Cars values('{request.json['brand']}','{request.json['model']}',{request.json['year']},'{request.json['description']}')"
-#     cursor = conn.cursor()
-#     cursor.execute(query)
-#     cursor2=conn.cursor()
-#     cursor2.execute("SELECT @@IDENTITY AS ID;")
-#     id = int(cursor2.fetchone()[0])
-#     conn.commit()
-#     return {'id': id}
+@app.route('/tiempo', methods=['POST'])   
+def agregar_tiempo():
+    query = f"INSERT INTO {request.json['nombre']} values('{request.json['coordenada']}','{request.json['fecha']}',{request.json['temperatura']},'{request.json['precipitaciones']}')"
+    cursor = conn.cursor()
+    cursor.execute(query)
+    cursor2=conn.cursor()
+    cursor2.execute("SELECT @@IDENTITY AS ID;")
+    id = int(cursor2.fetchone()[0])
+    conn.commit()
+    return {'id': id}
 
 
 # @app.route('/cars/<id>', methods=['DELETE'])    

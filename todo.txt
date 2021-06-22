@@ -8,4 +8,6 @@
 ## Conectar consumer comparacion a Flask API?
 
 ver como mandar valores de kafka en formato json -> junio 19 2021 ok
-ver como descifrar datos en consumer
+ver como descifrar datos en consumer -> junio 21 ok
+combinar bd en docker con Flask API -> ok
+usar API para guardar datos
