@@ -26,7 +26,10 @@ for i in range(len(coordenadas)):
     respuesta = json.loads(obtener_datos_api(coordenadas[i]).text)  
     # Agregar nombre a json entregado por API
     respuesta['nombre'] = nombres[i]
+    # Agregar coordenada a json
+    respuesta['coordenada'] = coordenadas[i]
     i += 1
-    producer.send('apitest', json.dumps(respuesta, default=json_util.default).encode('utf-8'))
-    
-#producer.flush()    
+    producer.send('flaskapitest2', json.dumps(respuesta, default=json_util.default).encode('utf-8'))
+    print(respuesta)
+
+producer.flush()    

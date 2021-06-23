@@ -9,5 +9,7 @@
 
 ver como mandar valores de kafka en formato json -> junio 19 2021 ok
 ver como descifrar datos en consumer -> junio 21 ok
-combinar bd en docker con Flask API -> ok
-usar API para guardar datos
+combinar bd en docker con Flask API -> junio 22 ok
+usar API para guardar datos -> junio 23 ok
+meter kafkaproducer a un airflow
+la conversion de coordenadas no esta funcionando bien, arreglarlo
