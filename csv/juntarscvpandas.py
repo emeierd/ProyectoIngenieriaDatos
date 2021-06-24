@@ -69,14 +69,22 @@ for i in range(len(temperaturas['Nombre'])):
     gradoLat = int(latitud[0].split('&')[0])
     minutosLat=int(latitud[1].replace("'",""))
     segundosLat=int(latitud[2].replace("'",""))
-    latitud = gradoLat+(minutosLat*60+segundosLat)/100
+    if(latitud[3]=="S"):
+        latitud = -(gradoLat+minutosLat/60+segundosLat/3600)
+    else:
+        latitud = gradoLat+minutosLat/60+segundosLat/3600
     temperaturas['Latitud'][i] = latitud
 
     longitud = temperaturas['Longitud'][i].split()
     gradoLon = int(longitud[0].split('&')[0])
     minutosLon=int(longitud[1].replace("'",""))
     segundosLon=int(longitud[2].replace("'",""))
-    longitud = gradoLon+(minutosLon*60+segundosLon)/100
+
+    if(longitud[3]=="W"):
+        longitud = -(gradoLon+minutosLon/60+segundosLon/3600)
+    else:
+        longitud = gradoLon+minutosLon/60+segundosLon/3600
+
     temperaturas['Longitud'][i] = longitud
     #print(f'[{latitud},{longitud}]')
 
