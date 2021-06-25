@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                       "Server=localhost,1433;"
-                      "Database=AppTiempo;"
+                      "Database=ProjectoID;"
                       "uid=sa;"
                       "pwd=aselga123")
 

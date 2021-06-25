@@ -5,12 +5,12 @@ import requests
 # Creando URL para comunicarse con Flask API
 url='http://127.0.0.1:8090/tiempo'
 
-# Crear consumer utilizando como bootstrap server el contenedor de docker
-consumer = KafkaConsumer(bootstrap_servers='172.17.0.03:9092',auto_offset_reset='earliest',
+# Crear consumer utilizando como bootstrap server el contenedor de docker conectado a red de airflow
+consumer = KafkaConsumer(bootstrap_servers='172.20.0.3:9092',auto_offset_reset='earliest',
     value_deserializer=lambda x: loads(x.decode('utf-8')))
 
 # Suscripcion a topic utilizado por producer    
-consumer.subscribe('flaskapitest2')
+consumer.subscribe('flaskapitest4')
 for msg in consumer:
     try:
         nombre = msg.value['nombre']

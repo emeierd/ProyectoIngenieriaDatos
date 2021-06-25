@@ -136,3 +136,4 @@ temperaturas['Nombre'].replace('C.M.A. Eduardo Frei Montalva, Ant?rtica ', 'Ant√
 
 # Guardar data transformada en csv
 temperaturas.to_csv('csv/data.csv', index=False)
+temperaturas.to_csv('extract/airflow/dags/functions/data.csv', index=False)

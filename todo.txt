@@ -12,4 +12,8 @@ ver como descifrar datos en consumer -> junio 21 ok
 combinar bd en docker con Flask API -> junio 22 ok
 usar API para guardar datos -> junio 23 ok
 meter kafkaproducer a un airflow
-la conversion de coordenadas no esta funcionando bien, arreglarlo
+la conversion de coordenadas no esta funcionando bien, arreglarlo -> junio 24 ok
+
+conectar maquina1 y maquina2 a red de airflow para que pueda correr -> junio 24 ok
+crear las bases de dato de nuevo, que temperatura y precipitaciones sean float no int
+hacer que airflow corra script python, no hacerlo con importar clase y correr metodo

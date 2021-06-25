@@ -4,7 +4,7 @@ import pandas as pd
 
 conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                       "Server=localhost,1433;"
-                      "Database=AppTiempo;"
+                      "Database=ProjectoID;"
                       "uid=sa;"
                       "pwd=aselga123")
 
@@ -22,7 +22,7 @@ nombres = list(Counter(data['Nombre']).keys())
 # Crear tablas por cada nombre
 for nombre in nombres:
     nombre = nombre.replace(" ","_")
-    query = f"CREATE TABLE {nombre} (id int IDENTITY(1,1) PRIMARY KEY, coordenada varchar(50), fecha varchar(50), temperatura int, precipitaciones int);"
+    query = f"CREATE TABLE {nombre} (id int IDENTITY(1,1) PRIMARY KEY, coordenada varchar(50), fecha varchar(50), temperatura float, precipitaciones float);"
     #print(query)
     cursor = conn.cursor()
     cursor.execute(query)
