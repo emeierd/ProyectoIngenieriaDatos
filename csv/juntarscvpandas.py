@@ -93,8 +93,21 @@ coordenadas = []
 for index, row in temperaturas.iterrows():
     coordenadas.append(f"{row['Latitud']},{row['Longitud']}")
 
-# Agregar coodenadas a temperatura
+# Agregar columna fecha en formato año-mes-dia
+fechas = []
+for index, row in temperaturas.iterrows():
+    fechas.append(f"{row['AA+-o']}-{row['Mes']}-{row['Dia']}")
+
+# Agregar coodenadas y fecha a temperatura
 temperaturas.insert(loc=3, column='Coordenadas', value=coordenadas)    
+temperaturas.insert(loc=4, column='Fecha', value=fechas)
+
+# Eliminar columnas año, mes, dia, latitud y longitud    
+temperaturas.drop('AA+-o',axis=1,inplace=True)
+temperaturas.drop('Mes',axis=1,inplace=True)
+temperaturas.drop('Dia',axis=1,inplace=True)
+temperaturas.drop('Latitud',axis=1,inplace=True)
+temperaturas.drop('Longitud',axis=1,inplace=True)
 
 # Eliminar 4 nombres unicos de la lista, ya que la api solo acepta 500 consultas al dia
 nombres = list(Counter(temperaturas['Nombre']).keys())

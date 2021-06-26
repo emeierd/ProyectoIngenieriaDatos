@@ -15,5 +15,6 @@ meter kafkaproducer a un airflow
 la conversion de coordenadas no esta funcionando bien, arreglarlo -> junio 24 ok
 
 conectar maquina1 y maquina2 a red de airflow para que pueda correr -> junio 24 ok
-crear las bases de dato de nuevo, que temperatura y precipitaciones sean float no int
-hacer que airflow corra script python, no hacerlo con importar clase y correr metodo
+crear las bases de dato de nuevo, que temperatura y precipitaciones sean float no int -> junio 24 ok
+hacer que airflow corra script python, no hacerlo con importar clase y correr metodo -> junio 24 ok
+agregar columna fecha a dataset -> junio 26 ok
