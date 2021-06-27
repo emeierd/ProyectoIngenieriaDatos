@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify
 import pyodbc
+from datetime import datetime, timedelta
+
+#AGREGAR ACA IMPORT PANDAS Y CARGAR CSV
 
 app = Flask(__name__)
 
@@ -34,6 +37,31 @@ def obtener_tiempo(id):
         return f'No hay datos sobre {id}: {e}'   
 
 
+@app.route('/tiempo/<id>/24h')
+def ultimas_24h(id):
+    hoy = datetime.now()
+    ayer=hoy-timedelta(hours=24)
+    format ='%Y-%m-%d'
+    ayer = ayer.strftime(format)
+    xd = '2021-06-24'
+    try:
+        query = f"SELECT * FROM {id} WHERE fecha LIKE '{xd}%'"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        tiempos = cursor.fetchall()
+        output = []
+        
+        i = 0
+        while(i<len(tiempos)):
+            tiempos_data = {'coordenada':tiempos[i][1],'fecha':tiempos[i][2],'temperatura':tiempos[i][3],'precipitaciones':tiempos[i][4]}
+            output.append(tiempos_data)
+            i += 1
+
+        return {"tiempos": output}
+    except Exception as e:
+        return f'No hay datos sobre {id}: {e}'  
+
+
 @app.route('/tiempo', methods=['POST'])   
 def agregar_tiempo():
     nombre = request.json['nombre']
@@ -52,6 +80,66 @@ def agregar_tiempo():
     except Exception as e:
         return f'Query: {query} produjo error de conexión de la base de datos: {e}'
 
+@app.route('/tiempo/<id>/resumen_dia')
+def resumen_dia(id):
+    hoy = datetime.now()
+    ayer=hoy-timedelta(hours=24)
+    format ='%Y-%m-%d'
+    ayer = ayer.strftime(format)
+    xd = '2021-06-24'
+    try:
+        query = f"SELECT * FROM {id} WHERE fecha LIKE '{xd}%'"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        tiempos = cursor.fetchall()
+        temperaturas = []
+        precipitaciones = 0
+        
+        i = 0
+        while(i<len(tiempos)):
+            temperaturas.append(tiempos[i][3])
+            precipitaciones += tiempos[i][4]
+            i += 1
+
+        minimo = min(temperaturas)
+        maximo = max(temperaturas)
+        
+        return {"minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
+    except Exception as e:
+        return f'No hay datos sobre {id}: {e}'  
+
+
+@app.route('/tiempo/<id>/resumen_dia', methods=['POST'])
+def guardar_resumen_dia(id):
+    hoy = datetime.now()
+    ayer=hoy-timedelta(hours=24)
+    format ='%Y-%m-%d'
+    ayer = ayer.strftime(format)
+    xd = '2021-06-24'
+    try:
+        query = f"SELECT * FROM {id} WHERE fecha LIKE '{xd}%'"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        tiempos = cursor.fetchall()
+        temperaturas = []
+        precipitaciones = 0
+        
+        i = 0
+        while(i<len(tiempos)):
+            temperaturas.append(tiempos[i][3])
+            precipitaciones += tiempos[i][4]
+            i += 1
+
+        minimo = min(temperaturas)
+        maximo = max(temperaturas)
+
+        #FALTA CREAR TABLAS _24 EN BD, AGREGAR DATOS A BD
+        #HACER UN FOR QUE RECORRA TODOS LOS NOMBRES DE CIUDADES
+        #A LOS NOMBRES CON ESPACIO HACER REPLACE POR _
+        
+        return {"minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
+    except Exception as e:
+        return f'No hay datos sobre {id}: {e}'          
 
 # @app.route('/cars/<id>', methods=['DELETE'])    
 # def delete_car(id):

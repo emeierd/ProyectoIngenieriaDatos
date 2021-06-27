@@ -1,20 +1,25 @@
 ##Guardar datos cada una hora
 ##Cada dia ver cual es el minimo y maximo y guardarlo en una bd diaria
 
-## Crear kafka producer
-## Mandar response a producer
-## Hacer consumer para bd
+## Crear kafka producer - ok
+## Mandar response a producer - ok
+## Hacer consumer para bd - ok
 ## Hacer consumer para comparacion?
 ## Conectar consumer comparacion a Flask API?
+    Nuevo enfoque: que api compare data historica (en csv) con la data que se guarda cada un dia
+        Hacer metodo post en api apra guardar data diaria
 
 ver como mandar valores de kafka en formato json -> junio 19 2021 ok
 ver como descifrar datos en consumer -> junio 21 ok
 combinar bd en docker con Flask API -> junio 22 ok
 usar API para guardar datos -> junio 23 ok
-meter kafkaproducer a un airflow
+meter kafkaproducer a un airflow -> junoi 23 ok
 la conversion de coordenadas no esta funcionando bien, arreglarlo -> junio 24 ok
 
 conectar maquina1 y maquina2 a red de airflow para que pueda correr -> junio 24 ok
 crear las bases de dato de nuevo, que temperatura y precipitaciones sean float no int -> junio 24 ok
 hacer que airflow corra script python, no hacerlo con importar clase y correr metodo -> junio 24 ok
 agregar columna fecha a dataset -> junio 26 ok
+
+FUTURO
+Ver como hacer query a kafka topic
