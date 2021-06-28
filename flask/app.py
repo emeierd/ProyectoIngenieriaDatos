@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 import pyodbc
 from datetime import datetime, timedelta
 
-#AGREGAR ACA IMPORT PANDAS Y CARGAR CSV
-
 app = Flask(__name__)
 
 conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
@@ -80,15 +78,16 @@ def agregar_tiempo():
     except Exception as e:
         return f'Query: {query} produjo error de conexión de la base de datos: {e}'
 
+
 @app.route('/tiempo/<id>/resumen_dia')
 def resumen_dia(id):
     hoy = datetime.now()
     ayer=hoy-timedelta(hours=24)
     format ='%Y-%m-%d'
     ayer = ayer.strftime(format)
-    xd = '2021-06-24'
+    #test = '2021-06-24'
     try:
-        query = f"SELECT * FROM {id} WHERE fecha LIKE '{xd}%'"
+        query = f"SELECT * FROM {id} WHERE fecha LIKE '{ayer}%'"
         cursor = conn.cursor()
         cursor.execute(query)
         tiempos = cursor.fetchall()
@@ -104,20 +103,22 @@ def resumen_dia(id):
         minimo = min(temperaturas)
         maximo = max(temperaturas)
         
-        return {"minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
+        return {"coordenada" : tiempos[0][1], "minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
     except Exception as e:
         return f'No hay datos sobre {id}: {e}'  
 
 
-@app.route('/tiempo/<id>/resumen_dia', methods=['POST'])
+@app.route('/tiempo/resumen_dia', methods=['POST'])
 def guardar_resumen_dia(id):
     hoy = datetime.now()
     ayer=hoy-timedelta(hours=24)
     format ='%Y-%m-%d'
     ayer = ayer.strftime(format)
-    xd = '2021-06-24'
+    nombre = request.json['nombre']
+    nombre = nombre.replace(" ","_")
+    coordenada = request.json['coordenada']
     try:
-        query = f"SELECT * FROM {id} WHERE fecha LIKE '{xd}%'"
+        query = f"SELECT * FROM {nombre} WHERE fecha LIKE '{ayer}%'"
         cursor = conn.cursor()
         cursor.execute(query)
         tiempos = cursor.fetchall()
@@ -133,13 +134,14 @@ def guardar_resumen_dia(id):
         minimo = min(temperaturas)
         maximo = max(temperaturas)
 
-        #FALTA CREAR TABLAS _24 EN BD, AGREGAR DATOS A BD
-        #HACER UN FOR QUE RECORRA TODOS LOS NOMBRES DE CIUDADES
-        #A LOS NOMBRES CON ESPACIO HACER REPLACE POR _
+        query2 = f"INSERT INTO {nombre}_24h values ('{coordenada}','{ayer}',{minimo},{maximo},{precipitaciones}"
+        cursor2=conn.cursor()
+        cursor2.execute(query2)
+        conn.commit()
         
-        return {"minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
+        return {"coordenada" : tiempos[0][1], "minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
     except Exception as e:
-        return f'No hay datos sobre {id}: {e}'          
+        return f'Ha ocurrido un error: {e}'          
 
 # @app.route('/cars/<id>', methods=['DELETE'])    
 # def delete_car(id):

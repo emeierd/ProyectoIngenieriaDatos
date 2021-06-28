@@ -1,23 +1,41 @@
-# En este script se obtendrá la temperatura mínima, máxima y las precipitaciones totales en un día
+# En este script se comunicara con la API mediante un metodo POST, el cual enviara el nombre de
+# la ciudad para que la api obtenga los datos de las ultimas 24h y luego los guarde en la tabla 24h
 import requests
-from datetime import date, datetime, timedelta
 import json
+import pandas as pd
+from collections import Counter
 
-# Obtener hora actual
-hoy = datetime.now()
-ayer=hoy-timedelta(hours=24)
-format ='%Y-%m-%d'
-ayer = ayer.strftime(format)
+# Cargar data
+## Local
+data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
+    names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
+## Airflow   
+# data = pd.read_csv('/usr/local/airflow/dags/functions/data.csv',
+#     names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
 
-url = 'http://127.0.0.1:8090/tiempo'
+# Eliminar primera fila con headers
+data.drop(index=data.index[0], axis=0, inplace=True) 
 
-x = json.loads(requests.get(f"{url}/Temuco").text)
+# Obtener todas las coordenadas y nombres unicos, en orden
+coordenadas = list(Counter(data['Coordenadas']).keys())
+nombres = list(Counter(data['Nombre']).keys())
 
-fecha = x['tiempos'][0]['fecha']
+url = 'http://127.0.0.1:8090/tiempo/resumen_dia'
 
-fecha = fecha.replace("-04:00","")
-fecha = datetime.strptime(fecha,'%Y-%m-%dT%H:%M:%S')
-fecha = fecha.strftime(format)
+def post_24h():
+    i = 0
+    for i in range(len(coordenadas)):
+        try:
+            json = {
+                "nombre" : nombres[i],
+                "coordenada" : coordenadas[i]
+            }
+            x = requests.post(url, json=json)    
 
-query = f"SELECT * FROM Temuco WHERE fecha LIKE'{fecha}%'"
-print(query)
+            print(x.text)   
+        except Exception as e:  
+            print(f"Error conectando a API: {e}")  
+        i+=1               
+
+
+post_24h()

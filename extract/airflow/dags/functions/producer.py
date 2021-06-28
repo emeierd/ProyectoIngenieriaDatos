@@ -9,12 +9,10 @@ import pandas as pd
 # Cargar data
 ## Local
 # data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
-#     names = ['Nombre','Latitud','Longitud','Coordenadas','AA+-o','Mes',
-#     'Dia','TMinima','TMaxima','Precipitaciones'])
+#     names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
 ## Airflow   
 data = pd.read_csv('/usr/local/airflow/dags/functions/data.csv',
-    names = ['Nombre','Latitud','Longitud','Coordenadas','AA+-o','Mes',
-    'Dia','TMinima','TMaxima','Precipitaciones'])
+    names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
 
 # Eliminar primera fila con headers
 data.drop(index=data.index[0], axis=0, inplace=True) 
