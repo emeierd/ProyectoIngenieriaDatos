@@ -20,7 +20,7 @@ data.drop(index=data.index[0], axis=0, inplace=True)
 coordenadas = list(Counter(data['Coordenadas']).keys())
 nombres = list(Counter(data['Nombre']).keys())
 
-url = 'http://127.0.0.1:8090/tiempo/resumen_dia'
+url = 'http://192.168.1.64:8090/tiempo/resumen_dia'
 
 def post_24h():
     i = 0

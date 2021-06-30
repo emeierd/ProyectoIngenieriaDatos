@@ -109,7 +109,7 @@ def resumen_dia(id):
 
 
 @app.route('/tiempo/resumen_dia', methods=['POST'])
-def guardar_resumen_dia(id):
+def guardar_resumen_dia():
     hoy = datetime.now()
     ayer=hoy-timedelta(hours=24)
     format ='%Y-%m-%d'
@@ -117,8 +117,9 @@ def guardar_resumen_dia(id):
     nombre = request.json['nombre']
     nombre = nombre.replace(" ","_")
     coordenada = request.json['coordenada']
+    #test = "2021-06-29"
+    query = f"SELECT * FROM {nombre} WHERE fecha LIKE '{ayer}%'"
     try:
-        query = f"SELECT * FROM {nombre} WHERE fecha LIKE '{ayer}%'"
         cursor = conn.cursor()
         cursor.execute(query)
         tiempos = cursor.fetchall()
@@ -134,7 +135,8 @@ def guardar_resumen_dia(id):
         minimo = min(temperaturas)
         maximo = max(temperaturas)
 
-        query2 = f"INSERT INTO {nombre}_24h values ('{coordenada}','{ayer}',{minimo},{maximo},{precipitaciones}"
+        nombre = nombre+"_24"
+        query2 = f"INSERT INTO {nombre} values ('{coordenada}','{ayer}',{minimo},{maximo},{precipitaciones})"
         cursor2=conn.cursor()
         cursor2.execute(query2)
         conn.commit()
@@ -156,4 +158,4 @@ def guardar_resumen_dia(id):
 #         return f'No car has id: {id}'       
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8090, debug=True)
+    app.run(host='192.168.1.64', port=8090, debug=True)

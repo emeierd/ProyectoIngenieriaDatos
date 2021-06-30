@@ -3,7 +3,7 @@ from json import loads
 import requests
 
 # Creando URL para comunicarse con Flask API
-url='http://127.0.0.1:8090/tiempo'
+url='http://192.168.1.64:8090/tiempo'
 
 # Crear consumer utilizando como bootstrap server el contenedor de docker conectado a red de airflow
 consumer = KafkaConsumer(bootstrap_servers='172.20.0.4:9092',auto_offset_reset='earliest',
