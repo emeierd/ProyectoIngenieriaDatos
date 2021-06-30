@@ -22,7 +22,7 @@ coordenadas = list(Counter(data['Coordenadas']).keys())
 nombres = list(Counter(data['Nombre']).keys())
 
 # Inicializar Kafka Producer
-producer = KafkaProducer(bootstrap_servers='172.20.0.3:9092') #172.17.0.3 ip de maquina2 docker
+producer = KafkaProducer(bootstrap_servers='172.20.0.4:9092') #172.17.0.3 ip de maquina2 docker
 
 # Iterar sobre coordenadas, llamar a la funcion para obtener datos mediante API y enviar respuesta a kafka producer
 def crear_mensaje():

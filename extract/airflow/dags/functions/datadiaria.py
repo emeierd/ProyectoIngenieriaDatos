@@ -7,11 +7,11 @@ from collections import Counter
 
 # Cargar data
 ## Local
-data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
-    names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
-## Airflow   
-# data = pd.read_csv('/usr/local/airflow/dags/functions/data.csv',
+# data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
 #     names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
+## Airflow   
+data = pd.read_csv('/usr/local/airflow/dags/functions/data.csv',
+    names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
 
 # Eliminar primera fila con headers
 data.drop(index=data.index[0], axis=0, inplace=True) 
