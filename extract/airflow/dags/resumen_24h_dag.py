@@ -17,7 +17,7 @@ default_args= {
 
 with DAG(
     dag_id="resumen_24h_dag",
-    schedule_interval="*/1440 * * * *",
+    schedule_interval="@daily",
     default_args= default_args,
     start_date = datetime(2020,6,30),
     catchup=False
