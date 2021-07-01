@@ -21,11 +21,6 @@ conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
 
 #@app.route('/tiempo/comparar/<id>')
 def comparar(id):
-    hoy = datetime.now()
-    ayer=hoy-timedelta(hours=24)
-    format ='%Y-%m-%d'
-    ayer = ayer.strftime(format)
-
     # data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
     #     names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
     data = pd.read_csv("csv/data.csv",
@@ -37,12 +32,12 @@ def comparar(id):
     nombrebd = id+"_24"
     data = data[data.Nombre == nombre]
 
-    query = f"SELECT * FROM {nombrebd} WHERE fecha LIKE '{ayer}%'"
+    query = f"SELECT TOP 1 fecha, temperatura_minima, temperatura_maxima, precipitaciones FROM {nombrebd} ORDER BY ID DESC"
 
     cursor = conn.cursor()
     cursor.execute(query)
     resumen = cursor.fetchall()
-    fechabd = resumen[0][2]
+    fechabd = resumen[0][0]
     fechabd = fechabd.split("-")[1]+"-"+fechabd.split("-")[2]
 
     for index, row in data.iterrows():
@@ -57,10 +52,10 @@ def comparar(id):
 
         fecharow = mes+"-"+dia    
         if (fechabd == fecharow):
-            print(f"temperatura minima: 2012: {row['TMinima']} 2021: {resumen[0][3]}")
-            print(f"temperatura maxima: 2012: {row['TMaxima']} 2021: {resumen[0][4]}")
-            print(f"total precipitaciones: 2012: {row['Precipitaciones']} 2021: {resumen[0][5]}")
-
+            print(fecha)
+            print(f"temperatura minima: 2012: {row['TMinima']} 2021: {resumen[0][1]}")
+            print(f"temperatura maxima: 2012: {row['TMaxima']} 2021: {resumen[0][2]}")
+            print(f"total precipitaciones: 2012: {row['Precipitaciones']} 2021: {resumen[0][3]}")
 
 
 comparar("Temuco")
