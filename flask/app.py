@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import pyodbc
 from datetime import datetime, timedelta
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -143,7 +144,53 @@ def guardar_resumen_dia():
         
         return {"coordenada" : tiempos[0][1], "minimo" : minimo, "maximo" : maximo, "precipitaciones" : precipitaciones}
     except Exception as e:
-        return f'Ha ocurrido un error: {e}'          
+        return f'Ha ocurrido un error: {e}'  
+
+@app.route('/tiempo/comparar/<id>')
+def comparar(id):
+    try:
+        data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
+            names = ['Nombre','Coordenadas','Fecha','TMinima','TMaxima','Precipitaciones'])
+
+        data.drop(index=data.index[0], axis=0, inplace=True) 
+
+        nombre = id.replace("_"," ")
+        nombrebd = id+"_24"
+        data = data[data.Nombre == nombre]
+
+        query = f"SELECT TOP 1 fecha, temperatura_minima, temperatura_maxima, precipitaciones FROM {nombrebd} ORDER BY ID DESC"
+
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resumen = cursor.fetchall()
+        fechabd = resumen[0][0]
+        fechabd = fechabd.split("-")[1]+"-"+fechabd.split("-")[2]
+        tmin = []
+        tmax = []
+        precipitaciones = []
+
+        for index, row in data.iterrows():
+            fecha = row['Fecha']
+            split = fecha.split("-")
+            mes = split[1]
+            dia = split[2]
+            if (len(mes)==1):
+                mes = "0"+mes
+            if (len(dia)==1):
+                dia = "0"+dia    
+
+            fecharow = mes+"-"+dia    
+            if (fechabd == fecharow):
+                tmin.append({"2012" : row['TMinima']})
+                tmin.append({"2021" : resumen[0][1]})
+                tmax.append({"2012" : row['TMaxima']})
+                tmax.append({"2021" : resumen[0][2]})
+                precipitaciones.append({"2012" : row['Precipitaciones']})
+                precipitaciones.append({"2021" : resumen[0][3]})
+
+        return {"fecha" : fechabd,"temperatura minima" : tmin,"temperatura maxima" : tmax, "precipitaciones" : precipitaciones}
+    except Exception as e:
+        return f'Ha ocurrido un error: {e}'
 
 # @app.route('/cars/<id>', methods=['DELETE'])    
 # def delete_car(id):
