@@ -19,20 +19,16 @@ data.drop(index=data.index[0], axis=0, inplace=True)
 # Obtener todas las coordenadas y nombres unicos, en orden
 nombres = list(Counter(data['Nombre']).keys())    
 
-# Crear tablas por cada nombre
-# for nombre in nombres:
-#     nombre = nombre.replace(" ","_")
-#     query = f"CREATE TABLE {nombre} (id int IDENTITY(1,1) PRIMARY KEY, coordenada varchar(50), fecha varchar(50), temperatura float, precipitaciones float);"
-#     #print(query)
-#     cursor = conn.cursor()
-#     cursor.execute(query)
-#     conn.commit()
-
-# Crear tablas resumen diario
 for nombre in nombres:
     nombre = nombre.replace(" ","_")
-    query = f"CREATE TABLE {nombre}_24 (id int IDENTITY(1,1) PRIMARY KEY, coordenada varchar(50), fecha varchar(50), temperatura_minima float, temperatura_maxima float, precipitaciones float);"
+    # Crear tablas por cada nombre
+    query = f"CREATE TABLE {nombre} (id int IDENTITY(1,1) PRIMARY KEY, coordenada varchar(50), fecha varchar(50) UNIQUE, temperatura float, precipitaciones float);"
+    # Crear tablas resumen diario
+    query2 = f"CREATE TABLE {nombre}_24 (id int IDENTITY(1,1) PRIMARY KEY, coordenada varchar(50), fecha varchar(50) UNIQUE, temperatura_minima float, temperatura_maxima float, precipitaciones float);"
     #print(query)
     cursor = conn.cursor()
     cursor.execute(query)
-    conn.commit()    
+    cursor.execute(query2)
+
+
+conn.commit()    

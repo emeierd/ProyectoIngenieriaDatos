@@ -16,10 +16,10 @@ default_args= {
     }
 
 with DAG(
-    dag_id="resumen_24h_dag",
-    schedule_interval="@daily",
+    dag_id="resumen24h_dag",
+    schedule_interval="00 4 * * *",
     default_args= default_args,
-    start_date = datetime(2020,6,30),
+    start_date = datetime(2021,7,3),
     catchup=False
 ) as f:
     resumen_24h = BashOperator(

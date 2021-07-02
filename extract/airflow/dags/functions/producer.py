@@ -34,7 +34,7 @@ def crear_mensaje():
         # Agregar coordenada a json
         respuesta['coordenada'] = coordenadas[i]
         i += 1
-        producer.send('flaskapitest4', json.dumps(respuesta, default=json_util.default).encode('utf-8'))
+        producer.send('projectotiempo', json.dumps(respuesta, default=json_util.default).encode('utf-8'))
         print(respuesta)
 
     producer.flush() 

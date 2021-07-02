@@ -16,10 +16,10 @@ default_args= {
     }
 
 with DAG(
-    dag_id="kafkaproducer_dag",
+    dag_id="producer_dag",
     schedule_interval="*/60 * * * *",
     default_args= default_args,
-    start_date = datetime(2020,6,23),
+    start_date = datetime(2021,7,3),
     catchup=False
 ) as f:
     producer = BashOperator(

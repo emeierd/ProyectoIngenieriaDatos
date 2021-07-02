@@ -10,7 +10,7 @@ consumer = KafkaConsumer(bootstrap_servers='172.20.0.4:9092',auto_offset_reset='
     value_deserializer=lambda x: loads(x.decode('utf-8')))
 
 # Suscripcion a topic utilizado por producer    
-consumer.subscribe('flaskapitest4')
+consumer.subscribe('projectotiempo')
 for msg in consumer:
     try:
         nombre = msg.value['nombre']
