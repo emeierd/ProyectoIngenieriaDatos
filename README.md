@@ -66,11 +66,48 @@ imprescindible para que Apache Kafka funcione.\
 se pueden crear más contenedores con broker de Kafka, con el fin de distribuir cargas de trabajo, en este caso solo se utilizó un broker, ya que el
 proyecto tiene fines de probar herramientas.
 
+Cabe mencionar que los siguentes pasos son ejecutados en Linux, para Windows deben realizar los pasos equivalentes mediante la UI de Windows y ejecutar los script
+de Kafka dentro de la carpeta windows, por ejemplo *C:\Kafka\bin\windows\kafka-server-start.bat*
 
-## Flask
+Para crear los contenedores se debe ejecutar lo siguiente, una ventana de línea de comandos por contenedor:
+1. docker run --name maquina1 -it ubuntu:latest
+2. docker run --name maquina2 -it ubuntu:latest
+3. En una ventana distinta ejecutar lo siguente para cambiar de red a los contenedores
+  3.1 docker network disconnect bridge maquina1
+    3.1.1 docker network connect airflow_default maquina1
+  3.2 docker network disconnect bridge maquina2
+    3.2.1. docker network connect airflo_default maquina2
+4. En ambas máquinas ejecutar
+  4.1. apt update && apt install -y nano openjdk-8-jre wget
+  4.2. wget https://downloads.apache.org/kafka/2.8.0/kafka_2.13-2.8.0.tgz
+  4.3. tar -xzf kafka_2.13-2.8.0.tgz 
+  4.4. cat /etc/hosts
+5. En máquina1 ejecutar
+  5.1. nano kafka_2.13-2.8.0/config/zookeeper.properties
+  5.2. dataDir=/kafka_2.13-2.8.0/zookeeper-logs  
+  5.3. mkdir kafka_2.13-2.8.0/zookeeper-logs
+  5.4. kafka_2.13-2.8.0/bin/zookeeper-server-start.sh kafka_2.13-2.8.0/config/zookeeper.properties
+6. En máquina2 ejecutar  
+  6.1. nano kafka_2.13-2.8.0/config/server.properties
+  6.2. zookeeper.connect=ipmaquina1:2181
+  6.3. listener=PLAINTEXT://ipmaquina2:9092
+  6.4. log.dirs=kafka_2.13-2.8.0/kafka-logs
+  6.5. kafka_2.13-2.8.0/bin/kafka-server-start.sh kafka_2.13-2.8.0/config/server.properties
+    
+Estos pasos se pueden encontrar en [extract/pasoskafka.txt](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/main/extract/pasoskafka.txt).
+
+Con esto ya tenemos Kafka operativo, se debe recordar la ip de maquina2, ya que será necesaria para conectar los Kafka producer y consumer
+en los script python.
+
+En este proyecto se utiliza Kafka para utilizar un producer, el cual producirá mensajes con la data obtenida desde la API del tiempo, luego habrá un
+consumer, el cual leerá esta data en formato json y realizará una *request post* para comunicarse con la API Flask, la cual se encargará de almacenar
+los datos en SQL Server
 
 ## Python
 ### Paquetes requeridos
+## Flask
+
+
 
 # Origen de los datos
 ## Temperaturas
