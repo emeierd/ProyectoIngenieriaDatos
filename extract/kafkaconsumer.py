@@ -6,9 +6,10 @@ import requests
 url='http://192.168.1.64:8090/tiempo'
 
 # Crear consumer utilizando como bootstrap server el contenedor de docker conectado a red de airflow
-consumer = KafkaConsumer(bootstrap_servers='172.20.0.4:9092',auto_offset_reset='earliest',
+# consumer = KafkaConsumer(bootstrap_servers='172.20.0.4:9092',auto_offset_reset='earliest',
+#     value_deserializer=lambda x: loads(x.decode('utf-8')))
+consumer = KafkaConsumer(bootstrap_servers='172.20.0.4:9092',
     value_deserializer=lambda x: loads(x.decode('utf-8')))
-
 # Suscripcion a topic utilizado por producer    
 consumer.subscribe('projectotiempo')
 for msg in consumer:
