@@ -1,11 +1,11 @@
 # ProyectoIngenieriaDatos
 Este es un proyecto en donde se ocupan una serie de herramientas de ingeniería de datos con el fin de mostrar su uso. 
-* Se transformarán datos desde archivos .csv, los cuales utilizados para distintas tareas.
+* Se transformarán datos desde archivos .csv y son guardados dentro de [csv/data.csv](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/f98dc3ec1ff89ddcc4984e3e952821104139c2a4/csv/data.csv) los cuales utilizados para distintas tareas.
 * Se extraerán datos de una API de tiempo, que muestra temperaturas y precipitaciones. Esto en base a los datos del punto anterior.
-* Estos datos extraídos serán enviados a través de Kafka producer
-* Se almacenarán datos en una base de datos
-* Se hará una comparación de estos datos con los datos 
-* Seguir explicando como funciona paso a paso
+* Estos datos extraídos serán enviados a través de Kafka producer, el cual estará dentro de un DAG de Apache Airflow, para que se ejecute de forma automática cada 60 minutos.
+* Se creará un Kafka consumer que leerá los mensajes enviados por producer, el cual posteriormente se comunicará con la API Flask para almacenar estos datos en SQL Server.
+* Se creará otro DAG de Airflow, el cual se ejecutará todos los dias a las 4AM, el cual obtendrá los datos del día anterior, calculará las temperaturas mínimas y máximas, así como el total de precipitaciones y luego se comunicará con la API Flask para ingresar estos datos a la base de datos.
+* Se hará una comparación de estos datos contra los datos dentro del archivo [csv/data.csv](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/f98dc3ec1ff89ddcc4984e3e952821104139c2a4/csv/data.csv) y se mostrará mediante una consulta a la API Flask.
 
 # Herramientas ocupadas
 ## Docker
@@ -29,7 +29,6 @@ Con esto tenemos el servidor de SQL Server funcionando, en caso de que se quiera
 
 Para volver a levantar el servidor se debe utilizar el comando\
 **docker start sqlserver2019**
-
 
 ## Apache Airflow
 Airflow es utilizado para automatizar todo el proceso de extracción, transformación y carga de datos. De esta forma, no se necesita estar pendiente
@@ -104,10 +103,31 @@ consumer, el cual leerá esta data en formato json y realizará una *request pos
 los datos en SQL Server
 
 ## Python
-### Paquetes requeridos
-## Flask
+Python es el lenguaje de programación escogido, debido a que contiene una serie de módulos que facilitan el trabajo con la data, además es el lenguaje de 
+programación que ocupa Apache Airflow.
 
+### Paquetes o módulos requeridos
+* **pandas** utilizado para leer los csv y transformar la data(eliminar, agregar columnas), etc.
+* **pyodbc** utilizado para hacer la conexión con SQL Server.
+* **flask** utilizado para crear la API que funcionará como intermermediario para las distintas tareas.
+* **collections** utilizado para obtener llaves y valores únicos de una *dataframe* de pandas.
+* **datetime** utilizado para manejar fechas.
+* **kafka - kafka-python** kafka-python es el módulo que se debe instalar mediante *pip install kafka-python*, luego para utilizarlo en python se debe importar el paquete kafka. Este es necesario para hacer las conexiones con los *broker* de Kafka.
+* **json** utilizado para decodificar los mensajes de la API en formato json.
+* **bson - pymongo** se debe instalar el módulo pymongo mediante *pip install pymongo* para poder utilizar el paquete bson en python. Este se utiliza para codificar los mensajes del Kafka producer en formato json.
+* **requests** utilizado para realizar consultas a las API, para así obtener datos de esta o mandar consultas POST a la API Flask para que esta se comunique con la base de datos.
 
+### Flask
+El código para la API Flask lo encontramos en [flask/app.py](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/f98dc3ec1ff89ddcc4984e3e952821104139c2a4/flask/app.py), en la que encontramos una serie de métodos. Se designó como *host* la ip propia de la máquina en la red local y no *localhost*, de no ser así los contenedores de Docker no podrían comunicarse con la API, también es escogió el puerto 8090, ya que el puerto 8080 está ocuparo por Airflow.
+
+Los métodos que encontramos en la API son los siguentes:
+* **/** *GET* que es la dirección por defecto y nos devuelve un mensaje de bienvenida, *ejemplo 192.168.1.64:8090/*
+* **/tiempo/id** *GET* nos devuelve todos los datos sobre la *id*(nombre de la ciudad) ingresada, comenzando con mayúscula y reemplazando los espacios por _, *ejemplo 192.168.1.64:8090/tiempo/Puerto_Montt*
+*  **tiempo/id/24h** *GET* nos devuelve los datos del día anterior sibre ka *id*(nombre de la ciudad) ingresada, comenzando con mayúscula y reemplazando los espacios por _, *ejemplo 192.168.1.64:8090/tiempo/Puerto_Montt/24h*
+*  **/tiempo** *POST* obtiene los datos en formato json que fueron enviados por la consulta y los transforma para crear una *query* hacia la base de datos de SQL Server. Es utilizado por el script [extract/kafkaconsumer.py](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/f98dc3ec1ff89ddcc4984e3e952821104139c2a4/extract/kafkaconsumer.py) par guardar las temperaturas y precipitaciones de las ciudades cada hora.
+*  **tiempo/id/resumen_dia** *GET* muestra el resumen del día anterior sobre la *id*(nombre de la ciudad) ingresada, comenzando con mayúscula y reemplazando los espacios por _, *ejemplo 192.168.1.64:8090/tiempo/Puerto_Montt/resumen_dia*
+*  **tiempo/resumen_dia** *POST* obtiene los datos en formato json que fueron enviados por la consulta y los transforma para crear una *query* hacia la base de datos e SQL Server. Es utilizado por el script [extract/airflow/dags/functions/datadiaria.py](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/f98dc3ec1ff89ddcc4984e3e952821104139c2a4/extract/airflow/dags/functions/datadiaria.py) para extraer las temperaturas mínimas, máximas y precipitaciones totales de las ciudades y luego guardarlas en la base de datos.
+*  **tiempo/comparar/id** *GET* realiza una comparación del día anterior de las precipitaciones y temperaturas, entre la data obtenida desde la API del tiempo y la data en formato .csv sobre la *id*(nombre de la ciudad) ingresada, comenzando con mayúscula y reemplazando los espacios por _, *ejemplo 192.168.1.64:8090/tiempo/comparar/Puerto_Montt*
 
 # Origen de los datos
 ## Temperaturas
@@ -115,3 +135,6 @@ https://datos.gob.cl/dataset/32806/resource/3572bdac-96f7-409f-8e6f-712b8a9cd245
 
 ## Precipitaciones
 https://datos.gob.cl/dataset/2719/resource/1994cc0d-3ab0-4493-8740-698392e1add5
+
+## API Tiempo
+https://www.tomorrow.io/
