@@ -42,9 +42,8 @@ def ultimas_24h(id):
     ayer=hoy-timedelta(hours=24)
     format ='%Y-%m-%d'
     ayer = ayer.strftime(format)
-    xd = '2021-06-24'
     try:
-        query = f"SELECT * FROM {id} WHERE fecha LIKE '{xd}%'"
+        query = f"SELECT * FROM {id} WHERE fecha LIKE '{ayer}%'"
         cursor = conn.cursor()
         cursor.execute(query)
         tiempos = cursor.fetchall()
