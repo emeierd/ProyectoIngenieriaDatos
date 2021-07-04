@@ -1,12 +1,18 @@
 1. Arrancar dos contenedores contenedor usando
-    docker run -it --rm ubuntu:latest  / para linux agregar sudo
-    docker run --name nombrecontenedor -it ubuntu:laters / para que no se borre 
+    docker run -it --rm ubuntu:latest  / para linux agregar sudo, se borrará al terminar sesión, no recomendable
+    docker run --name nombrecontenedor -it ubuntu:latest / para que no se borre 
+    docker run -d --network airflow_default --name nombrecontenedor -it ubuntu:latest
     1.1 Arracar contenedor existente
         sudo docker start nombrecontenedor --interactive
     1.2 Arrancar zookeeper en maquina1
         kafka_2.13-2.8.0/bin/zookeeper-server-start.sh kafka_2.13-2.8.0/config/zookeeper.properties
     1.3 Arrancar kafka en maquina 2    
         kafka_2.13-2.8.0/bin/kafka-server-start.sh kafka_2.13-2.8.0/config/server.properties   
+        
+2. Si no se corre el contenedor en la red airflow_default, se debe cambiar de forma manual
+    docker container inspect nombrecontenedor
+    docker network disconnect nombreredactual nombrecontenedor
+    docker netork connect airflow_default nombrecontenedor
 
 2. Correr actualizacion de apt e instalar nano, java y wget
     apt update && apt install -y nano openjdk-8-jre wget 
