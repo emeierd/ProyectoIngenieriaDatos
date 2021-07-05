@@ -1,3 +1,5 @@
+# En este script se crea un Kafka consumer, el cual luego realiza consultas a la API Flask
+# para que esta guarde los datos en la base de datos
 from kafka import KafkaConsumer
 from json import loads
 import requests
@@ -12,6 +14,8 @@ consumer = KafkaConsumer(bootstrap_servers='172.20.0.4:9092',
     value_deserializer=lambda x: loads(x.decode('utf-8')))
 # Suscripcion a topic utilizado por producer    
 consumer.subscribe('projectotiempo')
+
+# Se recorren los mensajes enviados por el producer y se decodifican
 for msg in consumer:
     try:
         nombre = msg.value['nombre']
@@ -20,6 +24,7 @@ for msg in consumer:
         temperatura = msg.value['data']['timelines'][0]['intervals'][0]['values']['temperature']
         precipitaciones = msg.value['data']['timelines'][0]['intervals'][0]['values']['precipitationIntensity']
         
+        # Se crea el json para poder crear la consulta POST a la API Flask
         json = {
             "nombre" : nombre,
             "coordenada" : coordenada,
@@ -28,6 +33,7 @@ for msg in consumer:
             "precipitaciones" : precipitaciones
         }
 
+        # Se realiza la consulta POST
         x = requests.post(url, json=json)    
 
         print(x.text)

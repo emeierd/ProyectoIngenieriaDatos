@@ -1,3 +1,5 @@
+# Este script utiliza el script 'extracciondata' para crear un mensaje y enviarlo mediante
+# un Kafka producer al topic 'projectotiempo'
 from kafka import KafkaProducer
 from functions.extracciondata import obtener_datos_api
 #from extracciondata import obtener_datos_api

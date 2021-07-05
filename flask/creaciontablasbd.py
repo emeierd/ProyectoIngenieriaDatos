@@ -1,7 +1,10 @@
+# Este es un script para crear las tablas de cada ciudad, para guardar data cada 60 minutos
+# y para el resumen del día anterior
 import pyodbc
 from collections import Counter
 import pandas as pd
 
+# Se inicializa la conexión a la base de datos
 conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                       "Server=localhost,1433;"
                       "Database=ProjectoID;"
@@ -19,6 +22,7 @@ data.drop(index=data.index[0], axis=0, inplace=True)
 # Obtener todas las coordenadas y nombres unicos, en orden
 nombres = list(Counter(data['Nombre']).keys())    
 
+# Se recorre el arreglo nombres para crear las tablas
 for nombre in nombres:
     nombre = nombre.replace(" ","_")
     # Crear tablas por cada nombre
@@ -30,5 +34,5 @@ for nombre in nombres:
     cursor.execute(query)
     cursor.execute(query2)
 
-
+# Se guardar los cambios realizados en la base de datos
 conn.commit()    

@@ -1,6 +1,9 @@
+# En este script se leerán las dos fuentes de datos en formato .csv mediante pandas
+# Luego se hará una transformación de los datos y se almacenará en el archivo data.csv
 import pandas as pd
 from collections import Counter
 
+# Leer csv, 'names' define las columnas de la tabla a leer
 temperaturas = pd.read_csv("csv/temperaturas.csv",
     names = ['_id','IdEstacion','Nombre','Latitud','Longitud','Altura','AA+-o','Mes',
     'Dia','TMinima','TMaxima'])
@@ -12,7 +15,7 @@ precipitaciones = pd.read_csv("csv/precipitaciones.csv",
 temperaturas.drop(index=temperaturas.index[0], axis=0, inplace=True)
 precipitaciones.drop(index=precipitaciones.index[0], axis=0, inplace=True)
 
-# Nombres unicos
+# Nombres unicos dentro de un dataframe
 countTemp = list(Counter(temperaturas['Nombre']).keys())
 
 # Verificar si las listas de nombre son identicas 
@@ -20,6 +23,10 @@ countTemp = list(Counter(temperaturas['Nombre']).keys())
 #     print("yes")
 # else:
 #     print("no")    
+
+# Los datos dentro de las fuentes de dato no son consistentes, es decir que por ejemplo
+# Ciudad x tiene 366 filas en temperaturas.csv, pero en precipitaciones.csv tiene 360
+# por lo que al momento de juntar ambas dataframe, hace que hayan valores vacíos
 
 # Crear dos listas distintas para ver que estaciones tienen 366 datos en ambas dataframe
 listTemp = list(Counter(temperaturas['Nombre']).values())
@@ -32,12 +39,14 @@ mezcla = [countTemp,listTemp,[]]
 for i in range(len(mezcla[1])):
     mezcla[2].append("Distintos")
 
+# Se recorren los arreglos mezcla[1][i] y listPrec[i], si ambos nombres contienen 366
+# datos, se etiqueta como "Iguales"
 for i in range(len(mezcla[1])):
     if(mezcla[1][i]==listPrec[i]):
         if(listPrec[i]==366):
             mezcla[2][i]="Iguales"
 
-
+# Se recorre mezcla[2][i] y elimina los nombres de ciudades que no tengan 366 datos
 for i in range(len(mezcla[1])):
     if(mezcla[2][i]=="Distintos"):
         #print(mezcla[0][i])
@@ -69,6 +78,7 @@ for i in range(len(temperaturas['Nombre'])):
     gradoLat = int(latitud[0].split('&')[0])
     minutosLat=int(latitud[1].replace("'",""))
     segundosLat=int(latitud[2].replace("'",""))
+    # Verificar si la latitud es norte o sur, si es sur se debe anteponer un signo -
     if(latitud[3]=="S"):
         latitud = -(gradoLat+minutosLat/60+segundosLat/3600)
     else:
@@ -80,6 +90,7 @@ for i in range(len(temperaturas['Nombre'])):
     minutosLon=int(longitud[1].replace("'",""))
     segundosLon=int(longitud[2].replace("'",""))
 
+    # Verificar si la longitud es este u oeste, si es oeste se debe anteponer un signo -
     if(longitud[3]=="W"):
         longitud = -(gradoLon+minutosLon/60+segundosLon/3600)
     else:

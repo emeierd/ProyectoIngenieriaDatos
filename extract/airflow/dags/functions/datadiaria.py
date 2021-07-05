@@ -22,6 +22,8 @@ nombres = list(Counter(data['Nombre']).keys())
 
 url = 'http://192.168.1.64:8090/tiempo/resumen_dia'
 
+# Esta función realiza la consulta POST a la API Flask, con cada nombre con su coordenada 
+# correspondiente dentro del archivo data.csv
 def post_24h():
     i = 0
     for i in range(len(coordenadas)):

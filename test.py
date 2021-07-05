@@ -1,3 +1,4 @@
+# Este es un script para pruebas de comparaciones
 import pandas as pd
 from collections import Counter
 import pyodbc

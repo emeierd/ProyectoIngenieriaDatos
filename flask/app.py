@@ -3,19 +3,22 @@ import pyodbc
 from datetime import datetime, timedelta
 import pandas as pd
 
+# Se inicializa la aplicación Flask
 app = Flask(__name__)
 
+# Se inicializa la conexión con la base de datos
 conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                       "Server=localhost,1433;"
                       "Database=ProjectoID;"
                       "uid=sa;"
                       "pwd=aselga123")
 
+# Mensaje de bienvenida
 @app.route('/')
 def index():
     return 'Bienvenido'
 
-
+# Se obtienen los datos de la tabla 'id'
 @app.route('/tiempo/<id>')
 def obtener_tiempo(id):
     try:
@@ -36,6 +39,7 @@ def obtener_tiempo(id):
         return f'No hay datos sobre {id}: {e}'   
 
 
+# Se obtienen los datos del día anterior de la tabla 'id'
 @app.route('/tiempo/<id>/24h')
 def ultimas_24h(id):
     hoy = datetime.now()
@@ -60,6 +64,7 @@ def ultimas_24h(id):
         return f'No hay datos sobre {id}: {e}'  
 
 
+# Se guardan los datos recibidos en formato json dentro de la base de datos
 @app.route('/tiempo', methods=['POST'])   
 def agregar_tiempo():
     nombre = request.json['nombre']
@@ -79,6 +84,7 @@ def agregar_tiempo():
         return f'Query: {query} produjo error de conexión de la base de datos: {e}'
 
 
+# Se muestra el resumen del día de ayer
 @app.route('/tiempo/<id>/resumen_dia')
 def resumen_dia(id):
     hoy = datetime.now()
@@ -108,6 +114,7 @@ def resumen_dia(id):
         return f'No hay datos sobre {id}: {e}'  
 
 
+# Se obtienen los datos del día anterior y se guardan dentro la tabla 24h de la ciudad correspondiente
 @app.route('/tiempo/resumen_dia', methods=['POST'])
 def guardar_resumen_dia():
     hoy = datetime.now()
@@ -145,6 +152,8 @@ def guardar_resumen_dia():
     except Exception as e:
         return f'Ha ocurrido un error: {e}'  
 
+
+# Se obtiene la comparación del día de ayer entre data actualizada y data del 2012
 @app.route('/tiempo/comparar/<id>')
 def comparar(id):
     try:
@@ -191,17 +200,6 @@ def comparar(id):
     except Exception as e:
         return f'Ha ocurrido un error: {e}'
 
-# @app.route('/cars/<id>', methods=['DELETE'])    
-# def delete_car(id):
-#     try:
-#         query = f"DELETE FROM Cars WHERE id={id}"
-#         cursor = conn.cursor()
-#         cursor.execute(query)
-#         conn.commit()
-
-#         return f'Car {id} deleted'
-#     except:
-#         return f'No car has id: {id}'       
-
+# Se indica la ip host y el puerto al cual será vinculado
 if __name__ == '__main__':
     app.run(host='192.168.1.64', port=8090, debug=True)
