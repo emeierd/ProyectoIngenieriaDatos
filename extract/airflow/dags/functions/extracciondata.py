@@ -34,3 +34,9 @@ def obtener_datos_api(coordenada):
     response = requests.request("POST", URL, json=payload, headers=headers, params=QUERYSTRING)
 
     return response
+
+# Necesario para correr script desde linea de comandos
+# ya que si no se realiza con este método al ser importado por producer.py hará que el scrip
+# se ejecute
+if __name__ == '__main__':
+    obtener_datos_api()    
