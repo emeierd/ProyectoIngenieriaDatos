@@ -16,7 +16,7 @@ Necesario para levantar Apache Airflow, el cual utiliza un contenedor de MySQL c
 
 ## SQL Server
 Para el servidor de SQL Server se ocupó la imagen oficial de Microsoft con el comando:
-docker run --name sqlserver2019 -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=aselga123' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+docker run --name sqlserver2019 -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=contrasena' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
 
 Una vez creado el contenedor de SQl Server se puede ingresar a este utilizando Microsoft SQL Server Management Studio(SSMS) o desde la línea de comandos.
 Más información disponible en [pasosbd.txt](https://github.com/emeierd/ProyectoIngenieriaDatos/blob/main/flask/pasosbd.txt), *cabe mencionar que los pasos señalados se realizaron en ubuntu 20.4, por lo que para windows se recomienda utilizar SSMS*
