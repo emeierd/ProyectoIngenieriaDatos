@@ -11,7 +11,7 @@ conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                       "Server=localhost,1433;"
                       "Database=ProjectoID;"
                       "uid=sa;"
-                      "pwd=aselga123")
+                      "pwd=contrasena")
 
 # Mensaje de bienvenida
 @app.route('/')
