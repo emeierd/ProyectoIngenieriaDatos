@@ -9,7 +9,7 @@ conn = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
                       "Server=localhost,1433;"
                       "Database=ProjectoID;"
                       "uid=sa;"
-                      "pwd=aselga123")
+                      "pwd=contrasena")
 
 # Cargar data
 data = pd.read_csv("/home/erwin/Desktop/ProyectoIngenieriaDatos/csv/data.csv",
